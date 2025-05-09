@@ -1,0 +1,101 @@
+﻿@model PROG7311_POE.Models.RegisterFarmerViewModel
+@{
+    ViewData["Title"] = "Register New Farmer";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Create New Farmer Account</h4>
+            </div>
+            <div class="card-body">
+                <form id="register-farmer" asp-controller="Account" asp-action="RegisterFarmer" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <h5>Account Information</h5>
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Username" class="form-label"></label>
+                            <input asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <h5>Farmer Information</h5>
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FarmName" class="form-label"></label>
+                            <input asp-for="FarmName" class="form-control" />
+                            <span asp-validation-for="FarmName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="OwnerName" class="form-label"></label>
+                            <input asp-for="OwnerName" class="form-control" />
+                            <span asp-validation-for="OwnerName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Dashboard" asp-controller="Employee" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">Register Farmer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Registration Information</h5>
+            </div>
+            <div class="card-body">
+                <p>Creating a farmer account will allow them to:</p>
+                <ul>
+                    <li>Register their energy production facilities</li>
+                    <li>Submit energy production data</li>
+                    <li>View their energy statistics</li>
+                    <li>Participate in energy trading</li>
+                </ul>
+                <p>All required fields are marked with an asterisk (*)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

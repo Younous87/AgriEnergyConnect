@@ -1,8 +1,70 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<PROG7311_POE.Models.Product>
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Welcome to Agri-Energy Connect</h1>
+        <p class="fs-4">Connecting farmers with energy markets to create sustainable solutions</p>
+        <a class="btn btn-primary btn-lg" asp-controller="Products" asp-action="Index">Browse Products</a>
+    </div>
+</div>
+
+<div class="row align-items-md-stretch mb-4">
+    <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-success rounded-3">
+            <h2>For Farmers</h2>
+            <p>Join our platform to list your agricultural products, connect with energy markets, and contribute to sustainable energy solutions.</p>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-outline-light" asp-controller="Account" asp-action="Login">Login</a>
+            }
+            else if (User.IsInRole("Farmer"))
+            {
+                <a class="btn btn-outline-light" asp-controller="Farmer" asp-action="Dashboard">Go to Dashboard</a>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="h-100 p-5 bg-primary text-white rounded-3">
+            <h2>For Energy Companies</h2>
+            <p>Find the agricultural resources you need for biofuel production, biomass energy, and other sustainable energy initiatives.</p>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-outline-light" asp-controller="Account" asp-action="Login">Login</a>
+            }
+            else if (User.IsInRole("Employee"))
+            {
+                <a class="btn btn-outline-light" asp-controller="Employee" asp-action="Products">Search Products</a>
+            }
+        </div>
+    </div>
+</div>
+
+<h2 class="mb-4">Recent Products</h2>
+
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    @(product.IsOrganic ? "Organic" : "Conventional")
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@product.ProductName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
+                    <p class="card-text">
+                        <strong>Farm:</strong> @product.Farmer.FarmName<br />
+                        <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
+                        <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

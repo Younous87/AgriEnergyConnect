@@ -71,7 +71,7 @@ namespace PROG7311_POE.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterFarmer(RegisterFarmerViewModel model)
         {
@@ -81,11 +81,15 @@ namespace PROG7311_POE.Controllers
             }
 
             var user = await _authService.RegisterUserAsync(model.Username, model.Password, "Farmer");
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("Username", "Username already exists");
+                foreach (var error in ModelState)
+                {
+                    Console.WriteLine($"{error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                }
                 return View(model);
             }
+
 
             var farmer = new Farmer
             {
@@ -102,7 +106,7 @@ namespace PROG7311_POE.Controllers
             await _farmerRepository.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Farmer registered successfully!";
-            return RedirectToAction("Index", "Employee");
+            return RedirectToAction("Dashboard", "Employee");
         }
     }
 }

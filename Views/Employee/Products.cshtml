@@ -1,0 +1,164 @@
+﻿@model PROG7311_POE.Models.ProductFilterViewModel
+@{
+    ViewData["Title"] = "Products Catalog";
+}
+
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Products Catalog</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Filters sidebar -->
+        <div class="col-md-3">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filter Products</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="filterForm">
+                        <!-- Category filter -->
+                        <div class="mb-3">
+                            <label asp-for="CategoryId" class="form-label">Product Category</label>
+                            <select asp-for="CategoryId" class="form-select">
+                                <option value="">All Categories</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.CategoryId">@category.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Date range -->
+                        <div class="mb-3">
+                            <label class="form-label">Harvest Date Range</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">From</span>
+                                <input asp-for="StartDate" type="date" class="form-control">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text">To</span>
+                                <input asp-for="EndDate" type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Farmer filter -->
+                        <div class="mb-3">
+                            <label asp-for="FarmerId" class="form-label">Farmer</label>
+                            <select asp-for="FarmerId" class="form-select">
+                                <option value="">All Farmers</option>
+                                @foreach (var farmer in Model.Farmers)
+                                {
+                                    <option value="@farmer.FarmerId">@farmer.FarmName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Organic only -->
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="OrganicOnly" class="form-check-input" type="checkbox">
+                                <label asp-for="OrganicOnly" class="form-check-label">Organic Products Only</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <button type="button" class="btn btn-outline-secondary" id="resetFilters">Reset Filters</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products listing -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Products (@Model.Products.Count())</h5>
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" id="productSearch" class="form-control" placeholder="Search products...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Products != null && Model.Products.Any())
+                    {
+                        <div class="row row-cols-1 row-cols-md-3 g-4" id="productsGrid">
+                            @foreach (var product in Model.Products)
+                            {
+                                <div class="col product-card">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-light">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge @(product.IsOrganic ? "bg-success" : "bg-secondary")">
+                                                    @(product.IsOrganic ? "Organic" : "Conventional")
+                                                </span>
+                                                <small class="text-muted">@product.ProductionDate.ToString("MMM dd, yyyy")</small>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">@product.ProductName</h5>
+                                            <p class="card-text text-muted">
+                                                <i class="bi bi-tag me-1"></i> @product.Category.CategoryName
+                                            </p>
+                                            <p class="card-text">
+                                                @* <strong>Type:</strong> @product.Type<br> *@
+                                                <strong>Farmer:</strong> @product.Farmer?.FarmName
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                                <a asp-action="ProductDetails" asp-route-id="@product.ProductId"
+                                                   class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-eye"></i> View Details
+                                                </a>
+                                                <a asp-action="ViewFarmer" asp-route-id="@product.FarmerId"
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-person"></i> View Farmer
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No products found matching your filter criteria.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Product search functionality
+            $("#productSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".product-card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // Reset filters button
+            $("#resetFilters").click(function() {
+                $("#filterForm")[0].reset();
+                $("#filterForm").submit();
+            });
+        });
+    </script>
+}

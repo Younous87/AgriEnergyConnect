@@ -20,33 +20,65 @@ namespace PROG7311_POE.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure relationships and constraints
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
+            // User table configuration
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.UserId);
+                entity.Property(u => u.UserId).ValueGeneratedOnAdd();
+                entity.HasIndex(u => u.Username).IsUnique();
+                entity.Property(u => u.Username).IsRequired();
+                entity.Property(u => u.PasswordHash).IsRequired();
+                entity.Property(u => u.Role).HasConversion<string>().IsRequired();
+                entity.Property(u => u.CreatedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
 
-            modelBuilder.Entity<User>()
-                .Property(u => u.Role)
-                .HasConversion<string>();
+            // Farmer table configuration
+            modelBuilder.Entity<Farmer>(entity =>
+            {
+                entity.HasKey(f => f.FarmerId);
+                entity.Property(f => f.FarmerId).ValueGeneratedOnAdd();
+                entity.Property(f => f.FarmName).IsRequired();
+                entity.Property(f => f.OwnerName).IsRequired();
+                entity.Property(f => f.JoinedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Farmer)
-                .WithOne(f => f.User)
-                .HasForeignKey<Farmer>(f => f.UserId);
+                // One to one relationship with User
+                entity.HasOne(f => f.User)
+                    .WithOne(u => u.Farmer)
+                    .HasForeignKey<Farmer>(f => f.UserId);
+            });
 
-            modelBuilder.Entity<Farmer>()
-                .HasMany(f => f.Products)
-                .WithOne(p => p.Farmer)
-                .HasForeignKey(p => p.FarmerId);
+            // ProductCategory table configuration
+            modelBuilder.Entity<ProductCategory>(entity =>
+            {
+                entity.HasKey(pc => pc.CategoryId);
+                entity.Property(pc => pc.CategoryId).ValueGeneratedOnAdd();
+                entity.HasIndex(pc => pc.CategoryName).IsUnique();
+                entity.Property(pc => pc.CategoryName).IsRequired();
+            });
 
-            modelBuilder.Entity<ProductCategory>()
-                .HasMany(c => c.Products)
-                .WithOne(p => p.Category)
-                .HasForeignKey(p => p.CategoryId);
+            // Product table configuration
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasKey(p => p.ProductId);
+                entity.Property(p => p.ProductId).ValueGeneratedOnAdd();
+                entity.Property(p => p.ProductName).IsRequired();
+                entity.Property(p => p.ProductionDate).IsRequired();
+                entity.Property(p => p.QuantityAvailable).HasColumnType("DECIMAL(10,2)").IsRequired();
+                entity.Property(p => p.UnitOfMeasure).IsRequired();
+                entity.Property(p => p.Price).HasColumnType("DECIMAL(10,2)");
+                entity.Property(p => p.IsOrganic).HasDefaultValue(false);
+                entity.Property(p => p.CreatedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            modelBuilder.Entity<ProductCategory>()
-                .HasIndex(c => c.CategoryName)
-                .IsUnique();
+                // Many to one relationship with Farmer
+                entity.HasOne(p => p.Farmer)
+                    .WithMany(f => f.Products)
+                    .HasForeignKey(p => p.FarmerId);
+
+                // Many to one relationship with ProductCategory
+                entity.HasOne(p => p.Category)
+                    .WithMany(pc => pc.Products)
+                    .HasForeignKey(p => p.CategoryId);
+            });
         }
     }
 }
