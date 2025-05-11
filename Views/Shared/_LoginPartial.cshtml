@@ -2,8 +2,22 @@
     @if (User.Identity.IsAuthenticated)
     {
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle me-1"></i>@User.Identity.Name
+            <a class="nav-link " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                
+                @if (User.IsInRole("Farmer"))
+                {
+
+
+                    <div class="farmer-text"><i class="bi bi-person-circle me-1 farmer-icon"></i>@User.Identity.Name</div>
+                }
+
+                @if (User.IsInRole("Employee"))
+                {
+
+
+                    <div class="energy-text"><i class="bi bi-person-circle me-1 energy-icon"></i>@User.Identity.Name</div>
+                }
+                
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 @if (User.IsInRole("Farmer"))

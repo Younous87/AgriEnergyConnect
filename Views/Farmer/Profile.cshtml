@@ -3,7 +3,7 @@
     ViewData["Title"] = "Farmer Profile";
 }
 
-<div class="container">
+@* <div class="container"> *@
     <div class="row mb-4">
         <div class="col">
             <nav aria-label="breadcrumb">
@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+            <div class="card-header  farmer-theme">
                     <h5 class="card-title mb-0">Farm Information</h5>
                 </div>
                 <div class="card-body">
@@ -31,30 +31,15 @@
                         <div class="col-md-4 fw-bold">Location:</div>
                         <div class="col-md-8">@Model.Address</div>
                     </div>
-@*                     <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">About Farm:</div>
-                        <div class="col-md-8">@Model.Description</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Certifications:</div>
-                        <div class="col-md-8">@Model.Certifications</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Sustainable Practices:</div>
-                        <div class="col-md-8">@Model.SustainablePractices</div>
-                    </div> *@
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Member Since:</div>
                         <div class="col-md-8">@Model.JoinedDate.ToShortDateString()</div>
                     </div>
-@*                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="#" class="btn btn-primary">Edit Profile</a>
-                    </div> *@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-success text-white">
+            <div class="card mb-4">
+            <div class="card-header  farmer-theme">
                     <h5 class="card-title mb-0">Contact Information</h5>
                 </div>
                 <div class="card-body">
@@ -73,56 +58,24 @@
                    
                 </div>
             </div>
-        </div>
 
-        @* <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="card-title mb-0">Farm Statistics</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="fw-bold">Total Area:</div>
-                        <div>@Model.FarmSizeAcres acres</div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="fw-bold">Primary Crops:</div>
-                        <div>@Model.PrimaryCrops</div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">Years in Operation:</div>
-                        <div>@Model.YearsInOperation years</div>
-                    </div>
-                </div>
-            </div> *@
-
-            <div class="card mb-4">
-                <div class="card-header bg-warning">
+            <div class="card">
+            <div class="card-header farmer-theme">
                     <h5 class="card-title mb-0">Account Actions</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a asp-action="Dashboard" class="btn btn-outline-primary">Go to Dashboard</a>
                         <a asp-action="AddProduct" class="btn btn-outline-success">Add New Product</a>
-@*                         <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-outline-warning">Change Password</a> *@
+                        
                     </div>
                 </div>
             </div>
-
-            @* <div class="card bg-light">
-                <div class="card-header bg-success text-white">
-                    <h5 class="card-title mb-0">Sustainability Score</h5>
-                </div>
-                <div class="card-body text-center">
-                    <div class="progress mb-3" style="height: 20px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: @(Model.SustainabilityScore)%;"
-                             aria-valuenow="@Model.SustainabilityScore" aria-valuemin="0" aria-valuemax="100">
-                            @Model.SustainabilityScore%
-                        </div>
-                    </div>
-                    <p class="card-text">Your farm's sustainability practices are making a difference!</p>
-                </div>
-            </div> *@
         </div>
+
+
+
+
     </div>
-</div>
+    
+@* </div> *@

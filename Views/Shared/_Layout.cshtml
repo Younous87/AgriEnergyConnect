@@ -7,13 +7,321 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-color: #43c6ac;
+            --secondary-color: #f8ffae;
+            --accent-color: #4caf50;
+            --text-dark: #333;
+            --text-light: #fff;
+            /* Farmer theme colors */
+            --farmer-primary: #4caf50;
+            --farmer-secondary: #8bc34a;
+            --farmer-accent: #33691e;
+            --farmer-light: #dcedc8;
+            /* Energy company theme colors */
+            --energy-primary: #0288d1;
+            --energy-secondary: #29b6f6;
+            --energy-accent: #01579b;
+            --energy-light: #b3e5fc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background-attachment: fixed;
+            color: var(--text-dark);
+        }
+
+        .navbar {
+            /* background-color: rgba(255, 255, 255, 0.9) !important; */
+            /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); */
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+            .navbar-brand .text-primary {
+                color: var(--primary-color) !important;
+            }
+
+            .navbar-brand .text-success {
+                color: var(--accent-color) !important;
+            }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: var(--primary-color);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover:after {
+                width: 100%;
+            }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        .btn-success {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+        }
+
+        footer {
+            /* background-color: rgba(255, 255, 255, 0.9); */
+            padding: 20px 0;
+            text-align: center;
+            /* box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1); */
+            margin-top: 30px;
+        }
+
+        /* Card styling */
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Alert customization */
+        .alert {
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            border-left-color: var(--accent-color);
+        }
+
+        .alert-danger {
+            border-left-color: #dc3545;
+        }
+
+        /* Custom section styling */
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 30px;
+        }
+
+            .hero-section h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: var(--text-dark);
+            }
+
+            .hero-section p {
+                font-size: 1.2rem;
+                max-width: 800px;
+                margin: 0 auto 30px;
+            }
+
+        /* Icon styling */
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+
+        /* Table styling */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+            .table-thead-th {
+                background-color: rgba(67, 198, 172, 0.1);
+                border-bottom: 2px solid var(--primary-color);
+                font-weight: 600;
+                padding: 12px;
+            }
+
+            .table-tbody-tr:hover {
+                background-color: rgba(67, 198, 172, 0.05);
+            }
+
+            .table-td {
+                padding: 12px;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+        /* Farmer theme styling */
+        .farmer-theme {
+            background: linear-gradient(135deg, var(--farmer-primary), var(--farmer-secondary));
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+            border-left: 4px solid var(--farmer-primary);
+        }
+
+            .farmer-theme .card-header {
+                background-color: var(--farmer-primary);
+                color: var(--text-light);
+            }
+
+            .farmer-theme .btn-theme {
+                background-color: var(--farmer-primary);
+                border-color: var(--farmer-accent);
+                color: white;
+            }
+
+                .farmer-theme .btn-theme:hover {
+                    background-color: var(--farmer-accent);
+                }
+
+        .farmer-section {
+            background-color: var(--farmer-light);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .farmer-icon {
+            color: var(--farmer-primary);
+        }
+
+        .farmer-border {
+            border-color: var(--farmer-primary) !important;
+        }
+
+        .farmer-text {
+            color: var(--farmer-accent);
+        }
+
+        .farmer-bg-light {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        /* Energy company theme styling */
+        .energy-theme {
+            background: linear-gradient(135deg, var(--energy-primary), var(--energy-secondary));
+            box-shadow: 0 5px 15px rgba(2, 136, 209, 0.2);
+            border-left: 4px solid var(--energy-primary);
+        }
+
+            .energy-theme .card-header {
+                background-color: var(--energy-primary);
+                color: var(--text-light);
+            }
+
+            .energy-theme .btn-theme {
+                background-color: var(--energy-primary);
+                border-color: var(--energy-accent);
+                color: white;
+            }
+
+                .energy-theme .btn-theme:hover {
+                    background-color: var(--energy-accent);
+                }
+
+        .energy-section {
+            background-color: var(--energy-light);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .energy-icon {
+            color: var(--energy-primary);
+        }
+
+        .energy-border {
+            border-color: var(--energy-primary) !important;
+        }
+
+        .energy-text {
+            color: var(--energy-accent);
+        }
+
+        .energy-bg-light {
+            background-color: rgba(2, 136, 209, 0.1);
+        }
+
+        /* Utility classes */
+        .text-primary-custom {
+            color: var(--primary-color) !important;
+        }
+
+        .text-accent {
+            color: var(--accent-color) !important;
+        }
+
+        .bg-primary-light {
+            background-color: rgba(67, 198, 172, 0.1) !important;
+        }
+
+        .bg-accent-light {
+            background-color: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .rounded-custom {
+            border-radius: 10px !important;
+        }
+
+        
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light ">
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <span class="text-primary fw-bold">Agri-Energy</span> <span class="text-success">Connect</span>
+                    <i class="bi bi-lightning-charge me-2"></i>
+                    <span class="text-primary">Agri-Energy</span> <span class="text-success">Connect</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -22,58 +330,96 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-1"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Products</a>
+                            <a class="nav-link" asp-controller="Products" asp-action="Index">
+                                <i class="bi bi-box me-1"></i> Products
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="About">About</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="About">
+                                <i class="bi bi-info-circle me-1"></i> About
+                            </a>
                         </li>
-                        @if (User.IsInRole("Farmer"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Farmer" asp-action="Dashboard">Dashboard</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Employee"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Employee" asp-action="Dashboard">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Employee" asp-action="Products">Product Search</a>
-                            </li>
-                        }
                     </ul>
+
+                    @if (User.IsInRole("Farmer"))
+                    {
+                        <a class="nav-link farmer-text " asp-controller="Farmer" asp-action="Dashboard">
+                            <i class="bi bi-speedometer2 me-1 farmer-icon"></i> Dashboard
+                        </a>
+                    }
+                    @if (User.IsInRole("Employee"))
+                    {
+                        <a class="nav-link energy-text" asp-controller="Employee" asp-action="Dashboard">
+                            <i class="bi bi-speedometer2 me-1 energy-icon"></i> Dashboard
+                        </a>
+                        <a class="nav-link energy-text" asp-controller="Employee" asp-action="Products">
+                            <i class="bi bi-search me-1 energy-icon"></i> Product Search
+                        </a>
+                    }
+                    
                     <partial name="_LoginPartial" />
+                    
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                @TempData["SuccessMessage"]
+                <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                @TempData["ErrorMessage"]
+                <i class="bi bi-exclamation-triangle me-2"></i> @TempData["ErrorMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer>
         <div class="container">
-            &copy; 2025 - Agri-Energy Connect - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-decoration-none">Home</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" class="text-decoration-none">Products</a></li>
+                        <li><a asp-controller="Home" asp-action="About" class="text-decoration-none">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Contact</h5>
+                    <p><i class="bi bi-envelope me-2"></i>info@agrienergy.connect</p>
+                    <p><i class="bi bi-telephone me-2"></i>0123456789</p>
+                </div>
+                @* <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="d-flex gap-3 fs-4">
+                        <a href="#" class="text-decoration-none"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-decoration-none"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-decoration-none"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-decoration-none"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div> *@
+            </div>
+            <hr>
+            <div class="text-center">
+                &copy; 2025 - Agri-Energy Connect - <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Privacy</a>
+            </div>
         </div>
     </footer>
 

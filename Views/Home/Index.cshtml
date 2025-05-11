@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3 text-center">
+<div class="p-5 mb-4  rounded-3 text-center">
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Welcome to Agri-Energy Connect</h1>
         <p class="fs-4">Connecting farmers with energy markets to create sustainable solutions</p>
@@ -12,31 +12,31 @@
 </div>
 
 <div class="row align-items-md-stretch mb-4">
-    <div class="col-md-6">
-        <div class="h-100 p-5 text-white bg-success rounded-3">
+    <div class="col-md-6 ">
+        <div class="card h-100 p-5 farmer-bg-light farmer-text farmer-section farmer-border farmer-bg-light">
             <h2>For Farmers</h2>
             <p>Join our platform to list your agricultural products, connect with energy markets, and contribute to sustainable energy solutions.</p>
             @if (!User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-outline-light" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn farmer-bg-light btn-theme farmer-text " asp-controller="Account" asp-action="Login">Login</a>
             }
             else if (User.IsInRole("Farmer"))
             {
-                <a class="btn btn-outline-light" asp-controller="Farmer" asp-action="Dashboard">Go to Dashboard</a>
+                <a class="btn farmer-bg-light btn-theme farmer-text " asp-controller="Farmer" asp-action="Dashboard">Go to Dashboard</a>
             }
         </div>
     </div>
     <div class="col-md-6">
-        <div class="h-100 p-5 bg-primary text-white rounded-3">
+        <div class="card h-100 p-5 energy-bg-light energy-section energy-text energy-border">
             <h2>For Energy Companies</h2>
             <p>Find the agricultural resources you need for biofuel production, biomass energy, and other sustainable energy initiatives.</p>
             @if (!User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-outline-light" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn energy-bg-light btn-theme energy-text" asp-controller="Account" asp-action="Login">Login</a>
             }
             else if (User.IsInRole("Employee"))
             {
-                <a class="btn btn-outline-light" asp-controller="Employee" asp-action="Products">Search Products</a>
+                <a class="btn energy-bg-light btn-theme energy-text" asp-controller="Employee" asp-action="Products">Search Products</a>
             }
         </div>
     </div>

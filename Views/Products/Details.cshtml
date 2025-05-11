@@ -4,7 +4,7 @@
     ViewData["Title"] = "Product Details";
 }
 
-<div class="container py-4">
+
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
@@ -75,8 +75,8 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
+            <div class="card mb-4 ">
+            <div class="card-header farmer-theme">
                     <h5 class="mb-0">Contact Farmer</h5>
                 </div>
                 <div class="card-body">
@@ -127,4 +127,3 @@
             <a asp-controller="Farmer" asp-action="DeleteProduct" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
         }
     </div>
-</div>
