@@ -1,0 +1,130 @@
+﻿@model PROG7311_POE.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.ProductName</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-3">@Model.ProductName</h1>
+            <div class="mb-4">
+                <span class="badge bg-@(Model.IsOrganic ? "success" : "secondary") me-2">@(Model.IsOrganic ? "Organic" : "Conventional")</span>
+                <span class="badge bg-primary">@Model.Category.CategoryName</span>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Product Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Description</div>
+                        <div class="col-md-8">@Model.Description</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Farm</div>
+                        <div class="col-md-8">@Model.Farmer.FarmName</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Location</div>
+                        <div class="col-md-8">@Model.Farmer.Address</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Production Date</div>
+                        <div class="col-md-8">@Model.ProductionDate.ToShortDateString()</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Available Quantity</div>
+                        <div class="col-md-8">@Model.QuantityAvailable @Model.UnitOfMeasure</div>
+                    </div>
+                </div>
+            </div>
+
+            @* @if (!string.IsNullOrEmpty(Model.ProductionMethod))
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Production Method</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.ProductionMethod</p>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.CertificationsHeld))
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Certifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.CertificationsHeld</p>
+                    </div>
+                </div>
+            } *@
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Contact Farmer</h5>
+                </div>
+                <div class="card-body">
+                    <h6>@Model.Farmer.OwnerName </h6>
+                    <p>
+                        <strong>Farm:</strong> @Model.Farmer.FarmName<br>
+                        <strong>Email:</strong> @Model.Farmer.Email<br>
+                        <strong>Phone:</strong> @Model.Farmer.PhoneNumber
+                    </p>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Employee"))
+                    {
+                        <a href="mailto:@Model.Farmer.Email" class="btn btn-success w-100 mb-2">Contact via Email</a>
+                        <a asp-controller="Messages" asp-action="Create" asp-route-recipientId="@Model.FarmerId" class="btn btn-outline-success w-100">Send Message</a>
+                    }
+                    else if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="alert alert-info">
+                            <p class="mb-0">Login as an energy company to contact this farmer.</p>
+                        </div>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100">Login</a>
+                    }
+                </div>
+            </div>
+
+            @* <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Energy Potential</h5>
+                </div>
+                <div class="card-body">
+                    <p>This product could generate approximately:</p>
+                    <h4 class="text-success">@(Model.EnergyValue * Model.QuantityAvailable) kWh</h4>
+                    <p>Total energy potential from available quantity</p>
+
+                    <hr>
+
+                    <p>Carbon offset potential:</p>
+                    <h4 class="text-primary">@(Model.CarbonFootprint * Model.QuantityAvailable) kg CO₂e</h4>
+                </div>
+            </div> *@
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Farmer") && User.FindFirst("FarmerId") != null && Model.FarmerId == int.Parse(User.FindFirst("FarmerId").Value))
+        {
+            <a asp-controller="Farmer" asp-action="EditProduct" asp-route-id="@Model.ProductId" class="btn btn-primary">Edit</a>
+            <a asp-controller="Farmer" asp-action="DeleteProduct" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
+        }
+    </div>
+</div>

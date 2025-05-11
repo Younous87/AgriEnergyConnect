@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace PROG7311_POE.Controllers
 {
-    [Authorize(Roles = "Farmer")]
+    
     public class FarmerController : Controller
     {
         private readonly IFarmerRepository _farmerRepository;
@@ -24,6 +24,7 @@ namespace PROG7311_POE.Controllers
             _categoryRepository = categoryRepository;
         }
 
+
         public async Task<IActionResult> Dashboard()
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -39,6 +40,7 @@ namespace PROG7311_POE.Controllers
             return View(products);
         }
 
+        [Authorize(Roles = "Farmer")]
         [HttpGet]
         public async Task<IActionResult> AddProduct()
         {
@@ -52,12 +54,12 @@ namespace PROG7311_POE.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProduct(Product product)
         {
-            if (!ModelState.IsValid)
-            {
-                var categories = await _categoryRepository.GetAllAsync();
-                ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
-                return View(product);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    var categories = await _categoryRepository.GetAllAsync();
+            //    ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
+            //    return View(product);
+            //}
 
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var farmer = await _farmerRepository.GetByUserIdAsync(userId);
@@ -69,6 +71,9 @@ namespace PROG7311_POE.Controllers
 
             product.FarmerId = farmer.FarmerId;
             product.CreatedDate = DateTime.Now;
+            product.Farmer = farmer;
+            product.Category = await _categoryRepository.GetByIdAsync(product.CategoryId);
+
 
             await _productRepository.AddAsync(product);
             await _productRepository.SaveChangesAsync();
@@ -105,12 +110,12 @@ namespace PROG7311_POE.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(Product product)
         {
-            if (!ModelState.IsValid)
-            {
-                var categories = await _categoryRepository.GetAllAsync();
-                ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
-                return View(product);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    var categories = await _categoryRepository.GetAllAsync();
+            //    ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
+            //    return View(product);
+            //}
 
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var farmer = await _farmerRepository.GetByUserIdAsync(userId);
@@ -156,5 +161,7 @@ namespace PROG7311_POE.Controllers
 
             return View(farmer);
         }
+
+
     }
 }

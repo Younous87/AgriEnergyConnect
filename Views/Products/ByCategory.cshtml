@@ -1,0 +1,66 @@
+﻿@model IEnumerable<PROG7311_POE.Models.Product>
+
+@{
+    ViewData["Title"] = ViewBag.CategoryName;
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@ViewBag.CategoryName</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="p-4 bg-light rounded-3">
+                <div class="container-fluid">
+                    <h1 class="display-5 fw-bold">@ViewBag.CategoryName</h1>
+                    <p class="fs-4">Browse all available products in the @ViewBag.CategoryName category</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No products found in this category.
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            @(product.IsOrganic ? "Organic" : "Conventional")
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@product.ProductName</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
+                            <p class="card-text">
+                                <strong>Farm:</strong> @product.Farmer.FarmName<br />
+                                <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
+                                <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to All Products</a>
+    </div>
+</div>
