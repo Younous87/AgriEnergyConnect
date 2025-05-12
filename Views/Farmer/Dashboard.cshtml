@@ -38,10 +38,6 @@
                         <h3>@Model.Count()</h3>
                         <p>Active Products</p>
                     </div>
-@*                     <div class="col-md-4 text-center">
-                        <h3>@Model.Sum(p => p.QuantityAvailable)</h3>
-                        <p>Total Quantity</p>
-                    </div> *@
                     <div class="col-md-4 text-center">
                         <h3>@Model.Count(p => p.IsOrganic)</h3>
                         <p>Organic Products</p>
@@ -91,7 +87,7 @@ else
                         <td>@product.Category.CategoryName</td>
                         <td>@product.ProductionDate.ToShortDateString()</td>
                         <td>@product.QuantityAvailable @product.UnitOfMeasure</td>
-                        <td>$@product.Price.ToString()</td>
+                        <td>R @product.Price.ToString()</td>
                         <td>@(product.IsOrganic ? "Yes" : "No")</td>
                         <td>
                             <a asp-action="EditProduct" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">Edit</a>

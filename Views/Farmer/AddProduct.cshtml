@@ -31,8 +31,6 @@
                     <form asp-action="AddProduct" asp-controller="Farmer" method="post">
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                        <!-- Hidden field for FarmerId -->
                         <input type="hidden" asp-for="FarmerId" />
 
                         <div class="mb-3">

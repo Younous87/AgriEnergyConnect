@@ -89,7 +89,7 @@
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Employee"))
                     {
                         <a href="mailto:@Model.Farmer.Email" class="btn btn-success w-100 mb-2">Contact via Email</a>
-                        <a asp-controller="Messages" asp-action="Create" asp-route-recipientId="@Model.FarmerId" class="btn btn-outline-success w-100">Send Message</a>
+                        @* <a asp-controller="Messages" asp-action="Create" asp-route-recipientId="@Model.FarmerId" class="btn btn-outline-success w-100">Send Message</a> *@
                     }
                     else if (!User.Identity.IsAuthenticated)
                     {
