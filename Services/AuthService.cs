@@ -11,27 +11,43 @@ namespace PROG7311_POE.Services
 {
     public class AuthService : IAuthService
     {
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Repository for user data access
         private readonly IUserRepository _userRepository;
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Constructor that initializes the user repository
         public AuthService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Validates a user's credentials by checking username and hashed password
         public async Task<bool> ValidateUserAsync(string username, string password)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
             if (user == null)
+
                 return false;
 
             return VerifyPassword(user.PasswordHash, password);
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Retrieves a user by their username
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _userRepository.GetByUsernameAsync(username);
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Hashes a password with a randomly generated salt 
         public string HashPassword(string password)
         {
             // Generate a random salt
@@ -43,29 +59,28 @@ namespace PROG7311_POE.Services
 
             // Hash the password with the salt
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
+                  password: password,
+                  salt: salt,
+                  prf: KeyDerivationPrf.HMACSHA256,
+                  iterationCount: 10000,
+                  numBytesRequested: 256 / 8));
 
-            // Combine the salt and the hash for storage
+            // Combine the salt and hash with ":" separator for storage
             return $"{Convert.ToBase64String(salt)}:{hashed}";
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Verifies if the provided password matches the stored hashed password
         public bool VerifyPassword(string hashedPassword, string providedPassword)
         {
-            // For the prototype, we'll use a simplified check
-            // In a real application, you would split the stored hash and salt, then rehash with the salt
-
-            // For test data, just check if we have the default hashed password from sample data
+            // Temporary hardcoded hash check for testing/sample data
             if (hashedPassword == "AQAAAAEAACcQAAAAEBrxfDQZIaIblWnIw6Dz8sW0tM6LWg4uxJZ4dIj6mGmL7XWxLrPppswLFYwKEg7RMw==")
             {
-                // This is our placeholder password in sample data
                 return true;
             }
 
-            // For newly created users with proper hashed passwords
+            // Extract salt and stored hash from the saved string
             var parts = hashedPassword.Split(':');
             if (parts.Length != 2)
                 return false;
@@ -73,32 +88,37 @@ namespace PROG7311_POE.Services
             var salt = Convert.FromBase64String(parts[0]);
             var storedHash = parts[1];
 
+            // Hash the provided password using the extracted salt
             string computedHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: providedPassword,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
+                  password: providedPassword,
+                  salt: salt,
+                  prf: KeyDerivationPrf.HMACSHA256,
+                  iterationCount: 10000,
+                  numBytesRequested: 256 / 8));
 
+            // Compare the computed hash with the stored hash
             return storedHash == computedHash;
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Signs in the user by creating a cookie-based authentication session
         public async Task SignInUserAsync(HttpContext httpContext, User user, bool isPersistent)
         {
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
 
             var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = isPersistent,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(3)
+                IsPersistent = isPersistent, // "Remember Me" option
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(3) // Session duration
             };
 
             await httpContext.SignInAsync(
@@ -107,14 +127,20 @@ namespace PROG7311_POE.Services
                 authProperties);
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Signs out the current user by clearing their authentication cookie.
         public async Task SignOutUserAsync(HttpContext httpContext)
         {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
+
+        // Registers a new user with a unique username, hashed password, and role
         public async Task<User> RegisterUserAsync(string username, string password, string role)
         {
-            // Check if username already exists
+            // Prevent duplicate usernames
             if (await _userRepository.UsernameExistsAsync(username))
                 return null;
 
@@ -131,5 +157,7 @@ namespace PROG7311_POE.Services
 
             return newUser;
         }
+
+        //°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
     }
-}
+}//°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°...ooo000 END OF FILE 000ooo...°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°//
