@@ -91,7 +91,6 @@ The system supports multiple user roles, each with specific permissions and capa
    - Access and edit own products
 
 3. **Guest User**
-   - View listed products
    - Basic browsing capabilities
 
 ## Database
