@@ -7,7 +7,10 @@
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Welcome to Agri-Energy Connect</h1>
         <p class="fs-4">Connecting farmers with energy markets to create sustainable solutions</p>
-        <a class="btn btn-primary btn-lg" asp-controller="Products" asp-action="Index">Browse Products</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary btn-lg" asp-controller="Products" asp-action="Index">Browse Products</a>
+        } 
     </div>
 </div>
 
@@ -42,29 +45,32 @@
     </div>
 </div>
 
-<h2 class="mb-4">Recent Products</h2>
+@if (User.Identity.IsAuthenticated)
+{
+    <h2 class="mb-4">Recent Products</h2>
 
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    @(product.IsOrganic ? "Organic" : "Conventional")
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@product.ProductName</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
-                    <p class="card-text">
-                        <strong>Farm:</strong> @product.Farmer.FarmName<br />
-                        <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
-                        <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        @(product.IsOrganic ? "Organic" : "Conventional")
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@product.ProductName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
+                        <p class="card-text">
+                            <strong>Farm:</strong> @product.Farmer.FarmName<br />
+                            <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
+                            <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
