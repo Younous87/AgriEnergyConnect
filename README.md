@@ -9,7 +9,7 @@ AgriEnergyConnect is a web-based platform designed to connect agricultural stake
 - [System Functionality](#system-functionality)
 - [User Roles](#user-roles)
 - [Database](#database)
--[References](#references)
+- [References](#references)
 
 ## Prerequisites
 
