@@ -48,30 +48,6 @@
                     </div>
                 </div>
             </div>
-
-            @* @if (!string.IsNullOrEmpty(Model.ProductionMethod))
-            {
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Production Method</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>@Model.ProductionMethod</p>
-                    </div>
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.CertificationsHeld))
-            {
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Certifications</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>@Model.CertificationsHeld</p>
-                    </div>
-                </div>
-            } *@
         </div>
 
         <div class="col-md-4">
@@ -89,7 +65,6 @@
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Employee"))
                     {
                         <a href="mailto:@Model.Farmer.Email" class="btn btn-success w-100 mb-2">Contact via Email</a>
-                        @* <a asp-controller="Messages" asp-action="Create" asp-route-recipientId="@Model.FarmerId" class="btn btn-outline-success w-100">Send Message</a> *@
                     }
                     else if (!User.Identity.IsAuthenticated)
                     {
@@ -100,22 +75,6 @@
                     }
                 </div>
             </div>
-
-            @* <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Energy Potential</h5>
-                </div>
-                <div class="card-body">
-                    <p>This product could generate approximately:</p>
-                    <h4 class="text-success">@(Model.EnergyValue * Model.QuantityAvailable) kWh</h4>
-                    <p>Total energy potential from available quantity</p>
-
-                    <hr>
-
-                    <p>Carbon offset potential:</p>
-                    <h4 class="text-primary">@(Model.CarbonFootprint * Model.QuantityAvailable) kg CO₂e</h4>
-                </div>
-            </div> *@
         </div>
     </div>
 
