@@ -10,6 +10,7 @@ AgriEnergyConnect is a web-based platform designed to connect agricultural stake
 - [User Roles](#user-roles)
 - [Database](#database)
 - [References](#references)
+- [GitHub Repo](#github-repo)
 
 ## Prerequisites
 
@@ -111,4 +112,8 @@ https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspn
 
 https://www.youtube.com/watch?v=7TpljNN0IvA
 
-https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-9.0
+https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-9.
+
+## GitHub Repo
+
+https://github.com/Younous87/PROG7311_POE.git
