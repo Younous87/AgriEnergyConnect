@@ -116,4 +116,6 @@ https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-9.
 
 ## GitHub Repo
 
+ST10311777 - Younous B. Houssen- PROG7311 - GR02 - POE Part 2 
+
 https://github.com/Younous87/PROG7311_POE.git
