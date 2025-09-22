@@ -67,22 +67,56 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Create or update the database
-using (var scope = app.Services.CreateScope())
+// Add a simple health check endpoint
+app.MapGet("/health", async (ApplicationDbContext context, ILogger<Program> logger) =>
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
+    try
+    {
+        // Test database connection
+        await context.Database.CanConnectAsync();
+        logger.LogInformation("Health check passed - database connection successful");
+        return Results.Ok(new { status = "healthy", database = "connected", timestamp = DateTime.UtcNow });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Health check failed - database connection error");
+        return Results.Json(new { status = "unhealthy", error = ex.Message, timestamp = DateTime.UtcNow }, statusCode: 500);
+    }
+});
+
+// Create or update the database
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
+        logger.LogInformation("Attempting to initialize database...");
+        
+        if (app.Environment.IsDevelopment())
+        {
+            // For development, ensure the database is created
+            context.Database.EnsureCreated();
+            logger.LogInformation("Development database ensured.");
+        }
+        else
+        {
+            // For production, apply any pending migrations
+            logger.LogInformation("Applying database migrations...");
+            context.Database.Migrate();
+            logger.LogInformation("Database migrations completed successfully.");
+        }
+    }
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while initializing the database.");
     
-    if (app.Environment.IsDevelopment())
-    {
-        // For development, ensure the database is created
-        context.Database.EnsureCreated();
-    }
-    else
-    {
-        // For production, apply any pending migrations
-        context.Database.Migrate();
-    }
+    // Don't fail the startup - let the app start without database initialization
+    // This allows us to see what's wrong and fix it
 }
 
 app.Run();

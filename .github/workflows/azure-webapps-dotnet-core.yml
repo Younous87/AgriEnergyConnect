@@ -48,6 +48,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'agrienergy-connect-portfolio'  # Replace with your actual app name
+          app-name: 'agrienergyconnectdemo'  # Replace with your actual app name
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
