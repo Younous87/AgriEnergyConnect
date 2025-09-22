@@ -11,8 +11,8 @@ using PROG7311_POE.Data;
 namespace PROG7311_POE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250922202257_InitialAzureCreate")]
-    partial class InitialAzureCreate
+    [Migration("20250922203037_FreshAzureDatabase")]
+    partial class FreshAzureDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

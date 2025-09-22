@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PROG7311_POE.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAzureCreate : Migration
+    public partial class FreshAzureDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

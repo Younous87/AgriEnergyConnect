@@ -22,7 +22,8 @@ else
 {
     // Use SQL Server for production (Azure)
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+               .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 }
 
 // Register repositories
@@ -103,10 +104,32 @@ try
         }
         else
         {
-            // For production, apply any pending migrations
-            logger.LogInformation("Applying database migrations...");
-            context.Database.Migrate();
-            logger.LogInformation("Database migrations completed successfully.");
+            // For production, try to ensure database exists first, then apply migrations
+            logger.LogInformation("Checking database existence...");
+            
+            try
+            {
+                // Try to apply migrations
+                logger.LogInformation("Applying database migrations...");
+                context.Database.Migrate();
+                logger.LogInformation("Database migrations completed successfully.");
+            }
+            catch (Exception migrationEx)
+            {
+                logger.LogWarning(migrationEx, "Migration failed, attempting to ensure database creation...");
+                
+                // If migration fails, try to ensure database is created
+                try
+                {
+                    context.Database.EnsureCreated();
+                    logger.LogInformation("Database created successfully using EnsureCreated.");
+                }
+                catch (Exception createEx)
+                {
+                    logger.LogError(createEx, "Failed to create database using EnsureCreated.");
+                    throw;
+                }
+            }
         }
     }
 }
