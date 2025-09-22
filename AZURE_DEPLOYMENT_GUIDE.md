@@ -5,47 +5,58 @@
 2. Azure CLI installed locally
 3. Git repository (already set up)
 
+## Your Current Setup
+- **SQL Server**: portfoliores.database.windows.net
+- **Database**: agrienergyconnect
+- **Authentication**: Active Directory Default (no username/password needed)
+
 ## Deployment Steps
 
-### 1. Create Azure Resources
+### 1. Create Azure Web App
 ```bash
 # Login to Azure
 az login
 
-# Create resource group
-az group create --name rg-agrienergy --location "East US"
+# Create resource group (if not exists)
+az group create --name rg-portfolio --location "East US"
 
 # Create App Service Plan
-az appservice plan create --name plan-agrienergy --resource-group rg-agrienergy --sku F1 --is-linux
+az appservice plan create --name plan-agrienergy --resource-group rg-portfolio --sku F1 --is-linux
 
 # Create Web App
-az webapp create --name agrienergy-connect-demo --resource-group rg-agrienergy --plan plan-agrienergy --runtime "DOTNETCORE:8.0"
-
-# Create SQL Database Server
-az sql server create --name sql-agrienergy-server --resource-group rg-agrienergy --location "East US" --admin-user sqladmin --admin-password "YourStrongPassword123!"
-
-# Create SQL Database
-az sql db create --server sql-agrienergy-server --resource-group rg-agrienergy --name AgriEnergyConnect --service-objective Basic
-
-# Configure firewall (allow Azure services)
-az sql server firewall-rule create --server sql-agrienergy-server --resource-group rg-agrienergy --name AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+az webapp create --name agrienergy-connect-demo --resource-group rg-portfolio --plan plan-agrienergy --runtime "DOTNETCORE:8.0"
 ```
 
 ### 2. Configure App Settings
 ```bash
-# Set connection string
-az webapp config connection-string set --name agrienergy-connect-demo --resource-group rg-agrienergy --connection-string-type SQLAzure --settings DefaultConnection="Server=tcp:sql-agrienergy-server.database.windows.net,1433;Initial Catalog=AgriEnergyConnect;Persist Security Info=False;User ID=sqladmin;Password=YourStrongPassword123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+# Set connection string using your provided connection string
+az webapp config connection-string set --name agrienergy-connect-demo --resource-group rg-portfolio --connection-string-type SQLAzure --settings DefaultConnection="Server=tcp:portfoliores.database.windows.net,1433;Initial Catalog=agrienergyconnect;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";"
 
 # Set environment to Production
-az webapp config appsettings set --name agrienergy-connect-demo --resource-group rg-agrienergy --settings ASPNETCORE_ENVIRONMENT=Production
+az webapp config appsettings set --name agrienergy-connect-demo --resource-group rg-portfolio --settings ASPNETCORE_ENVIRONMENT=Production
+
+# Enable managed identity for Azure AD authentication
+az webapp identity assign --name agrienergy-connect-demo --resource-group rg-portfolio
 ```
 
-### 3. Deploy using GitHub Actions or Azure DevOps
-- The project is already connected to GitHub
-- You can set up continuous deployment from the Azure portal
+### 3. Database Permissions
+Since you're using Active Directory Default authentication, you'll need to:
+1. **Assign permissions** to your Web App's managed identity in the SQL database
+2. **Run this SQL command** in your database (via Azure Portal Query Editor):
+```sql
+CREATE USER [agrienergy-connect-demo] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_datareader ADD MEMBER [agrienergy-connect-demo];
+ALTER ROLE db_datawriter ADD MEMBER [agrienergy-connect-demo];
+ALTER ROLE db_ddladmin ADD MEMBER [agrienergy-connect-demo];
+```
+
+### 4. Deploy using GitHub Actions
+- The GitHub Actions workflow is already configured
+- Once you push code, it will automatically deploy to Azure
+- Make sure to add the Azure publish profile to GitHub secrets
 
 ## Important Notes
 - Replace `agrienergy-connect-demo` with your preferred unique app name
-- Replace `YourStrongPassword123!` with a strong password
-- The Free (F1) tier is used for demonstration purposes
-- Database will be created automatically when the app first runs
+- The database connection uses Azure AD authentication (more secure)
+- Managed identity handles authentication automatically
+- Database schema will be created automatically when the app first runs
