@@ -44,10 +44,14 @@ jobs:
         with:
           name: .net-app
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.agrienergyconnectdemo_SPN }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'agrienergyconnectdemo'  # Replace with your actual app name
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
