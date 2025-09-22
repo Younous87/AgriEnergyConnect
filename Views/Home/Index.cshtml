@@ -7,7 +7,7 @@
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Welcome to Agri-Energy Connect</h1>
         <p class="fs-4">Connecting farmers with energy markets to create sustainable solutions</p>
-        @if (User.Identity.IsAuthenticated)
+        @if (User.Identity?.IsAuthenticated == true)
         {
             <a class="btn btn-primary btn-lg" asp-controller="Products" asp-action="Index">Browse Products</a>
         } 
@@ -19,7 +19,7 @@
         <div class="card h-100 p-5 farmer-bg-light farmer-text farmer-section farmer-border farmer-bg-light">
             <h2>For Farmers</h2>
             <p>Join our platform to list your agricultural products, connect with energy markets, and contribute to sustainable energy solutions.</p>
-            @if (!User.Identity.IsAuthenticated)
+            @if (User.Identity?.IsAuthenticated != true)
             {
                 <a class="btn farmer-bg-light btn-theme farmer-text " asp-controller="Account" asp-action="Login">Login</a>
             }
@@ -33,7 +33,7 @@
         <div class="card h-100 p-5 energy-bg-light energy-section energy-text energy-border">
             <h2>For Energy Companies</h2>
             <p>Find the agricultural resources you need for biofuel production, biomass energy, and other sustainable energy initiatives.</p>
-            @if (!User.Identity.IsAuthenticated)
+            @if (User.Identity?.IsAuthenticated != true)
             {
                 <a class="btn energy-bg-light btn-theme energy-text" asp-controller="Account" asp-action="Login">Login</a>
             }
@@ -45,32 +45,56 @@
     </div>
 </div>
 
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity?.IsAuthenticated == true)
 {
     <h2 class="mb-4">Recent Products</h2>
 
-    <div class="row">
-        @foreach (var product in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        @(product.IsOrganic ? "Organic" : "Conventional")
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">@product.ProductName</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
-                        <p class="card-text">
-                            <strong>Farm:</strong> @product.Farmer.FarmName<br />
-                            <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
-                            <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+    @if (ViewBag.DatabaseError != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">System Initializing</h4>
+            <p>@ViewBag.DatabaseError</p>
+            <hr>
+            <p class="mb-0">Please try again in a few minutes. The system is setting up the database.</p>
+        </div>
+    }
+    else if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            @(product.IsOrganic ? "Organic" : "Conventional")
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@product.ProductName</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@product.Category.CategoryName</h6>
+                            <p class="card-text">
+                                <strong>Farm:</strong> @product.Farmer.FarmName<br />
+                                <strong>Production Date:</strong> @product.ProductionDate.ToShortDateString()<br />
+                                <strong>Quantity:</strong> @product.QuantityAvailable @product.UnitOfMeasure
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">No Products Yet</h4>
+            <p>No products have been listed yet. Be the first farmer to add products to the marketplace!</p>
+            @if (User.IsInRole("Farmer"))
+            {
+                <hr>
+                <a class="btn btn-primary" asp-controller="Farmer" asp-action="AddProduct">Add Your First Product</a>
+            }
+        </div>
+    }
 }
